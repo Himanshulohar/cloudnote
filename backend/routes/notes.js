@@ -47,7 +47,7 @@ router.post(
   }
 );
 
-//ROUTE 3: Update a Note using POST '/api/notes/updatenote'
+//ROUTE 3: Update a Note using PUT '/api/notes/updatenote'
 router.put('/updatenote/:id', fetchuser, async (req, res) => {
   try {
     const { title, description, tag } = req.body;
@@ -83,4 +83,24 @@ router.put('/updatenote/:id', fetchuser, async (req, res) => {
   }
 });
 
+//ROUTE 4: Delete a Note using DELETE '/api/notes/deletenote'
+router.delete('/deletenote/:id', fetchuser, async (req, res) => {
+  try {
+    //Find Node to be updated and update it
+    let note = await Note.findById(req.params.id);
+    if (!note) {
+      return res.status(404).send('Not Found');
+    }
+    //Allow deletion only if user owns this Note
+    if (note.user.toString() != req.user.id) {
+      return res.status(401).send('Not Allowed');
+    }
+    note = await Note.findByIdAndDelete(req.params.id);
+    res.json({ Success: 'Note has been deleted', note: note });
+  } catch (error) {
+    console.error(error.message);
+    // HTTP 500 Internal Server Error (for DB or server issues)
+    res.status(500).send('Internal Server Error: Could not process request.');
+  }
+});
 module.exports = router;
