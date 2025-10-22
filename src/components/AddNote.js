@@ -29,6 +29,7 @@ const AddNote = () => {
               name='title'
               aria-describedby='emailHelp'
               onChange={onChange}
+              required
             />
           </div>
           <div className='mb-3'>
@@ -41,6 +42,7 @@ const AddNote = () => {
               id='description'
               name='description'
               onChange={onChange}
+              required
             />
           </div>
           <div className='mb-3'>
@@ -56,6 +58,7 @@ const AddNote = () => {
             />
           </div>
           <button
+          disabled={note.title.length<1 || note.description.length<1}
             type='submit'
             className='btn btn-primary'
             onClick={handleClick}

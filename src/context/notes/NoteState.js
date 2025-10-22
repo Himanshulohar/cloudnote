@@ -19,7 +19,6 @@ const NoteState = props => {
       },
     });
     const json = await response.json();
-    console.log(json);
     setnotes(json);
   };
   //Add a Note
@@ -27,6 +26,13 @@ const NoteState = props => {
   const addNote = async (title, description, tag) => {
     //API Call would be here
     const url = `${host}/api/notes/addnote`;
+    // START: Conditional logic to ensure Mongoose default is used
+    const noteData = { title, description };
+
+    // Only include the tag if it's a non-empty string after trimming whitespace
+    if (tag && tag.trim() !== '') {
+      noteData.tag = tag;
+    }
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -34,21 +40,9 @@ const NoteState = props => {
         'auth-token':
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjhmNjk5N2RkNzI0MmYzMTE2MWY1ZjRjIn0sImlhdCI6MTc2MTAzMzAxMX0.CJfO216lnlUh8j-HTBh4S0ErBeRCtxjsUZg9DKUNCxk',
       },
-      body: JSON.stringify({ title, description, tag }),
+      body: JSON.stringify(noteData),
     });
-    const json = await response.json();
-    console.log(json);
-
-    console.log('Adding a new note');
-    const note = {
-      _id: '68f757e46541c68a7cd0d894',
-      user: '68f6997dd7242f31161f5f4c',
-      title: title,
-      description: description,
-      tag: tag,
-      date: '2025-10-21T09:52:36.961Z',
-      __v: 0,
-    };
+    const note = await response.json();
     setnotes(notes.concat(note));
   };
   //Delete a Note
@@ -63,10 +57,8 @@ const NoteState = props => {
       },
     });
     const json = await response.json();
-    console.log(json);
     const newnotes = notes.filter(note => note._id !== id);
     setnotes(newnotes);
-    console.log('Deleting the note with ID: ' + id);
   };
   //Edit a Note
   const editNote = async (id, title, description, tag) => {
@@ -82,11 +74,10 @@ const NoteState = props => {
       body: JSON.stringify({ title, description, tag }),
     });
     const json = await response.json();
-    console.log(json);
 
     let newNotes = JSON.parse(JSON.stringify(notes));
     //Logic to edit in client
-    console.log('Editing the note with ID: ' + id);
+
     for (let i = 0; i < newNotes.length; i++) {
       const note = newNotes[i];
       if (note._id === id) {
@@ -95,7 +86,7 @@ const NoteState = props => {
         newNotes[i].tag = tag;
         break;
       }
-      console.log(notes);
+
       setnotes(newNotes);
     }
   };

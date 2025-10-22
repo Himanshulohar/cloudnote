@@ -82,6 +82,8 @@ const Notes = () => {
                     aria-describedby='emailHelp'
                     onChange={onChange}
                     value={note.etitle}
+                    minLength={3}
+                    required
                   />
                 </div>
                 <div className='mb-3'>
@@ -95,6 +97,8 @@ const Notes = () => {
                     name='edescription'
                     onChange={onChange}
                     value={note.edescription}
+                    minLength={3}
+                    required
                   />
                 </div>
                 <div className='mb-3'>
@@ -108,6 +112,7 @@ const Notes = () => {
                     name='etag'
                     onChange={onChange}
                     value={note.etag}
+                    minLength={3}
                   />
                 </div>
               </form>
@@ -126,6 +131,9 @@ const Notes = () => {
       </div>
       <div className='row my-3'>
         <h2 className='my-5 p-4'> Your Notes </h2>
+        <div className='container mx-3'>
+          {notes.length === 0 && 'No notes to display'}
+        </div>
         {notes.map(note => {
           return (
             <Noteitem key={note._id} updateNote={updateNote} note={note} />
