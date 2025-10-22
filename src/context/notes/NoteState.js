@@ -62,6 +62,13 @@ const NoteState = props => {
   };
   //Edit a Note
   const editNote = async (id, title, description, tag) => {
+    // START: Conditional logic to ensure Mongoose default is used
+    const noteData = { title, description };
+
+    // Only include the tag if it's a non-empty string after trimming whitespace
+    if (tag && tag.trim() !== '') {
+      noteData.tag = tag;
+    } else noteData.tag = 'General';
     //API Call would be here
     const url = `${host}/api/notes/updatenote/${id}`;
     const response = await fetch(url, {
@@ -71,7 +78,7 @@ const NoteState = props => {
         'auth-token':
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjhmNjk5N2RkNzI0MmYzMTE2MWY1ZjRjIn0sImlhdCI6MTc2MTAzMzAxMX0.CJfO216lnlUh8j-HTBh4S0ErBeRCtxjsUZg9DKUNCxk',
       },
-      body: JSON.stringify({ title, description, tag }),
+      body: JSON.stringify(noteData),
     });
     const json = await response.json();
 

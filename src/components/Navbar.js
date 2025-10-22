@@ -5,7 +5,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className='navbar navbar-dark bg-dark fixed-top navbar-expand-lg border-bottom border-secondary '
+      className='navbar  fixed-top navbar-expand-lg border-bottom border-secondary '
       //style={{ maxWidth: '75%', margin: '0 auto' }}
     >
       <div className='container-fluid'>
@@ -47,6 +47,20 @@ const Navbar = () => {
               </Link>
             </li>
           </ul>
+          <Link
+            to='/login'
+            role='button'
+            className='btn btn-outline-primary mx-2'
+          >
+            Login
+          </Link>
+          <Link
+            to='/signup'
+            role='button'
+            className='btn btn-outline-primary mx-2'
+          >
+            Signup
+          </Link>
         </div>
       </div>
     </nav>
