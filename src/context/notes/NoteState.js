@@ -36,6 +36,8 @@ const NoteState = props => {
       },
       body: JSON.stringify({ title, description, tag }),
     });
+    const json = await response.json();
+    console.log(json);
 
     console.log('Adding a new note');
     const note = {
@@ -50,7 +52,18 @@ const NoteState = props => {
     setnotes(notes.concat(note));
   };
   //Delete a Note
-  const deleteNote = id => {
+  const deleteNote = async id => {
+    const url = `${host}/api/notes/deletenote/${id} `;
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token':
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjhmNjk5N2RkNzI0MmYzMTE2MWY1ZjRjIn0sImlhdCI6MTc2MTAzMzAxMX0.CJfO216lnlUh8j-HTBh4S0ErBeRCtxjsUZg9DKUNCxk',
+      },
+    });
+    const json = await response.json();
+    console.log(json);
     const newnotes = notes.filter(note => note._id !== id);
     setnotes(newnotes);
     console.log('Deleting the note with ID: ' + id);
@@ -68,17 +81,22 @@ const NoteState = props => {
       },
       body: JSON.stringify({ title, description, tag }),
     });
-    const json = response.json();
+    const json = await response.json();
+    console.log(json);
+
+    let newNotes = JSON.parse(JSON.stringify(notes));
     //Logic to edit in client
     console.log('Editing the note with ID: ' + id);
-    for (let i = 0; i < notes.length; i++) {
-      const note = notes[i];
+    for (let i = 0; i < newNotes.length; i++) {
+      const note = newNotes[i];
       if (note._id === id) {
-        note.title = title;
-        note.description = description;
-        note.tag = tag;
+        newNotes[i].title = title;
+        newNotes[i].description = description;
+        newNotes[i].tag = tag;
         break;
       }
+      console.log(notes);
+      setnotes(newNotes);
     }
   };
   return (
