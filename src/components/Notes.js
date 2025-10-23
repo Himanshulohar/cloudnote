@@ -123,7 +123,7 @@ const Notes = props => {
                     minLength={3}
                   />
                   <div className='fst-italic form-text fw-lighter text-md-end'>
-                    <h8>*(Optional) by default tag will be 'General'</h8>
+                    <p>*(Optional) by default tag will be 'General'</p>
                   </div>
                 </div>
               </form>
