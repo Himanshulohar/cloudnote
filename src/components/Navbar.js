@@ -1,6 +1,11 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const Navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    Navigate('/login');
+  };
   let location = useLocation();
 
   return (
@@ -47,20 +52,32 @@ const Navbar = () => {
               </Link>
             </li>
           </ul>
-          <Link
-            to='/login'
-            role='button'
-            className='btn btn-outline-primary mx-2'
-          >
-            Login
-          </Link>
-          <Link
-            to='/signup'
-            role='button'
-            className='btn btn-outline-primary mx-2'
-          >
-            Signup
-          </Link>
+          {localStorage.getItem('token') ? (
+            // TRUE (Logged In): Show Logout Button
+            <button onClick={handleLogout} className='btn btn-primary'>
+              Logout
+            </button>
+          ) : (
+            // FALSE (Logged Out): Show Login/Signup Links
+            // Using a Fragment (<>...</>) to wrap the two adjacent <Link> elements
+            <>
+              <Link
+                to='/login'
+                role='button'
+                className='btn btn-outline-primary mx-2'
+              >
+                Login
+              </Link>
+
+              <Link
+                to='/signup'
+                role='button'
+                className='btn btn-outline-primary mx-2'
+              >
+                Signup
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
