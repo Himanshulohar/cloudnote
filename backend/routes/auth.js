@@ -32,10 +32,11 @@ router.post(
     }),
   ],
   async (req, res) => {
+    let success = false;
     // Check for validation errors from express-validator
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ success, errors: errors.array() });
     }
 
     // Essential try-catch block for database errors
@@ -46,7 +47,7 @@ router.post(
         // HTTP 400 Bad Request
         return res
           .status(400)
-          .json({ error: 'User with this email already exists.' });
+          .json({ success, error: 'User with this email already exists.' });
       }
 
       const salt = await bcrypt.genSalt(10);
@@ -65,7 +66,8 @@ router.post(
         },
       };
       const authToken = jwt.sign(data, JWT_SECRET);
-      res.json({ authToken });
+      success = true;
+      res.json({ success, authToken });
     } catch (error) {
       console.error(error.message);
       // HTTP 500 Internal Server Error (for DB or server issues)
@@ -82,6 +84,7 @@ router.post(
     body('password', 'Password cannot be blank').exists(),
   ],
   async (req, res) => {
+    let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -90,17 +93,23 @@ router.post(
     try {
       let user = await User.findOne({ email });
       if (!user)
-        return res.status(400).json('Try to login with correct credentials');
+        return res
+          .status(400)
+          .json({ success, error: 'Try to login with correct credentials' });
       const passwordCompare = await bcrypt.compare(password, user.password);
-      if (!passwordCompare)
-        return res.status(400).json('Try to login with correct credentials');
+      if (!passwordCompare) {
+        return res
+          .status(400)
+          .json({ success, error: 'Try to login with correct credentials' });
+      }
       const data = {
         user: {
           id: user.id,
         },
       };
       const authToken = jwt.sign(data, JWT_SECRET);
-      res.json({ authToken });
+      success = true;
+      res.json({ success, authToken });
     } catch (error) {
       console.error(error.message);
       // HTTP 500 Internal Server Error (for DB or server issues)
