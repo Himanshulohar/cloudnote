@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Alert from './Alert';
+
 const Login = props => {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
   const Navigate = useNavigate();

@@ -18,7 +18,8 @@ const AddNote = props => {
   return (
     <div>
       <div className='container'>
-        <h2 className='my-5 p-4 '>Welcome to CloudNote</h2>
+        <h2 className='text-center mb-4'>Welcome to CloudNote</h2>
+
         <form>
           <div className='mb-3'>
             <label htmlFor='title' className='form-label'>

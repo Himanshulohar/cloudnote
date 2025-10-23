@@ -112,6 +112,7 @@ const Notes = props => {
                   <label htmlFor='exampleInputPassword1' className='form-label'>
                     Tag
                   </label>
+
                   <input
                     type='text'
                     className='form-control'
@@ -121,6 +122,9 @@ const Notes = props => {
                     value={note.etag}
                     minLength={3}
                   />
+                  <div className='fst-italic form-text fw-lighter text-md-end'>
+                    <h8>*(Optional) by default tag will be 'General'</h8>
+                  </div>
                 </div>
               </form>
             </div>
@@ -137,7 +141,7 @@ const Notes = props => {
         </div>
       </div>
       <div className='row my-3'>
-        <h2 className='my-5 p-4'> Your Notes </h2>
+        <h2 className='text-center mb-4'> Your Notes </h2>
         <div className='container mx-3'>
           {notes.length === 0 && 'No notes to display'}
         </div>
