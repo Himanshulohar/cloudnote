@@ -7,14 +7,14 @@ import { useNavigate } from 'react-router-dom';
 
 const Notes = props => {
   const context = useContext(notecontext);
-  const Navigate = useNavigate();
+  const Navigate = useNavigate(); // Include getNotes in the destructuring
   const { notes, getNotes, editNote } = context;
   const [note, setNote] = useState({
     id: '',
     etitle: '',
     edescription: '',
     etag: '',
-  });
+  }); // Initialize the component and fetch notes on mount
   useEffect(() => {
     if (localStorage.getItem('token')) {
       getNotes(); // eslint-disable-next-line
@@ -23,28 +23,33 @@ const Notes = props => {
       Navigate('/login');
     }
   }, []);
+
   const updateNote = currentNote => {
     ref.current.click();
     setNote({
       id: currentNote._id,
       etitle: currentNote.title,
       edescription: currentNote.description,
-      etag: currentNote.tag,
+      etag: currentNote.tag ? currentNote.tag : 'General',
     });
   };
   const ref = useRef(null);
-  const refclose = useRef(null);
-  const handleClick = e => {
-    editNote(note.id, note.etitle, note.edescription, note.etag);
+  const refclose = useRef(null); // FIX: Made handleClick async and called getNotes() to refresh the state after edit
+  const handleClick = async e => {
+    // Assuming editNote is an asynchronous API call, we should await it
+    await editNote(note.id, note.etitle, note.edescription, note.etag); // Refresh the notes list from the backend to ensure the UI is up-to-date
+    getNotes();
     refclose.current.click();
     props.showAlert('Updated Successfully', 'success');
   };
   const onChange = e => {
     setNote({ ...note, [e.target.name]: e.target.value });
   };
+
   return (
     <>
       <AddNote showAlert={props.showAlert} />
+
       <button
         type='button'
         className='btn btn-primary d-none'
@@ -54,6 +59,7 @@ const Notes = props => {
       >
         Launch demo modal
       </button>
+
       <div
         className='modal fade'
         id='exampleModal'
@@ -65,8 +71,9 @@ const Notes = props => {
           <div className='modal-content'>
             <div className='modal-header'>
               <h1 className='modal-title fs-5' id='exampleModalLabel'>
-                Edit Note
+                Updating Node
               </h1>
+
               <button
                 type='button'
                 className='btn-close'
@@ -75,12 +82,14 @@ const Notes = props => {
                 ref={refclose}
               ></button>
             </div>
+
             <div className='modal-body'>
               <form>
                 <div className='mb-3'>
                   <label htmlFor='title' className='form-label'>
                     Title
                   </label>
+
                   <input
                     type='text'
                     className='form-control'
@@ -93,10 +102,12 @@ const Notes = props => {
                     required
                   />
                 </div>
+
                 <div className='mb-3'>
                   <label htmlFor='exampleInputPassword1' className='form-label'>
                     Description
                   </label>
+
                   <input
                     type='text'
                     className='form-control'
@@ -108,6 +119,7 @@ const Notes = props => {
                     required
                   />
                 </div>
+
                 <div className='mb-3'>
                   <label htmlFor='exampleInputPassword1' className='form-label'>
                     Tag
@@ -122,12 +134,14 @@ const Notes = props => {
                     value={note.etag}
                     minLength={3}
                   />
+
                   <div className='fst-italic form-text fw-lighter text-md-end'>
                     <p>*(Optional) by default tag will be 'General'</p>
                   </div>
                 </div>
               </form>
             </div>
+
             <div className='modal-footer'>
               <button
                 type='button'
@@ -140,11 +154,13 @@ const Notes = props => {
           </div>
         </div>
       </div>
+
       <div className='row my-3'>
-        <h2 className='text-center mb-4'> Your Notes </h2>
+        <h2 className=' mb-4'> Your Notes </h2>
         <div className='container mx-3'>
           {notes.length === 0 && 'No notes to display'}
         </div>
+
         {notes.map(note => {
           return (
             <Noteitem

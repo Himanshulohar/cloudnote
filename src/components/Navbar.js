@@ -58,7 +58,7 @@ const Navbar = props => {
 
   return (
     <nav
-      className='navbar fixed-top navbar-expand-lg border-bottom border-secondary '
+      className='navbar fixed-top navbar-expand-lg border-bottom border-secondary bg-white'
       style={{ maxWidth: '75%', margin: '0 auto' }}
     >
       <div className='container-fluid'>
@@ -91,8 +91,6 @@ const Navbar = props => {
               </Link>
             </li>
           </ul>
-
-
 
           {localStorage.getItem('token') ? (
             // TRUE (Logged In): Show Dropdown Menu for User and Logout
@@ -133,7 +131,7 @@ const Navbar = props => {
               <Link
                 to='/login'
                 role='button'
-                className='btn btn-outline-primary mx-2'
+                className='btn btn-outline-secondary mx-2'
               >
                 Login
               </Link>
@@ -141,7 +139,7 @@ const Navbar = props => {
               <Link
                 to='/signup'
                 role='button'
-                className='btn btn-outline-primary mx-2'
+                className='btn btn-outline-secondary mx-2'
               >
                 Signup
               </Link>

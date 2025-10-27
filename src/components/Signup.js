@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Signup = props => {
-  // Passed props here for future use (like showAlert)
   // 1. STATE INITIALIZATION: Must be at the top level of the component
   const [credentials, setCredentials] = useState({
     name: '',
@@ -11,11 +10,9 @@ const Signup = props => {
     confirmpassword: '',
   });
 
-  const host = 'http://localhost:5000';
-  // 2. useNavigate hook initialized correctly (lowercase 'navigate')
-  const navigate = useNavigate();
+  const host = 'http://localhost:5000'; // 2. useNavigate hook initialized correctly
+  const navigate = useNavigate(); // Optional: Redirects if the user is already logged in
 
-  // Optional: Redirects if the user is already logged in
   useEffect(() => {
     if (localStorage.getItem('token')) {
       console.log(
@@ -26,33 +23,27 @@ const Signup = props => {
   }, [navigate]);
 
   const handleSubmit = async e => {
-    e.preventDefault();
+    e.preventDefault(); // 3. Password Confirmation Logic and Basic Validation
 
-    // 3. Password Confirmation Logic and Basic Validation
     if (credentials.password !== credentials.confirmpassword) {
-      console.error('Passwords do not match!');
-      // TODO: Replace with a proper alert/notification system (e.g., using props.showAlert)
+      props.showAlert('Passwords do not match!', 'danger');
       return;
-    }
+    } // Basic minimum length check (enforced via minLength attribute as well)
 
-    // Basic minimum length check (optional but good practice)
     if (credentials.password.length < 5) {
-      console.error('Password must be at least 5 characters long.');
+      props.showAlert('Password must be at least 5 characters long.', 'danger');
       return;
-    }
+    } // Destructure necessary fields for the API call
 
-    // Destructure necessary fields for the API call
-    const { name, email, password } = credentials;
+    const { name, email, password } = credentials; // API Call to create user
 
-    // API Call to create user
     const url = `${host}/api/auth/createuser`;
     try {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-        },
-        // 4. Use destructured values from the correct state
+        }, // 4. Use destructured values from the correct state
         body: JSON.stringify({ name, email, password }),
       });
 
@@ -62,15 +53,17 @@ const Signup = props => {
       if (json.success) {
         // Save the auth token and redirect
         localStorage.setItem('token', json.authToken);
-        navigate('/');
-        // Optional: Show success message
+        navigate('/'); // Optional: Show success message
         props.showAlert('Account created successfully', 'success');
-        console.log('Account created successfully!');
       } else {
-        props.showAlert('Invalid details provided', 'danger');
+        props.showAlert(
+          'Invalid details provided. Email may already be in use.',
+          'danger'
+        );
       }
     } catch (error) {
       console.error('An error occurred during signup:', error);
+      props.showAlert('An unexpected error occurred.', 'danger');
     }
   };
 
@@ -80,75 +73,92 @@ const Signup = props => {
   };
 
   return (
-    <div className='container' style={{ marginTop: '50px' }}>
-      <h2 className='text-center mb-4'>Create an Account to use iNotebook</h2>
-      <form onSubmit={handleSubmit}>
-        <div className='mb-3'>
-          <label htmlFor='name' className='form-label'>
-            Name
-          </label>
-          <input
-            type='text'
-            className='form-control'
-            id='name'
-            name='name'
-            onChange={onChange}
-            required
-            value={credentials.name}
-            minLength={3}
-          />
+    // Applied mt-5 for consistent top margin
+    <div className='bg-light py-5 container mt-5 rounded-4'>
+      <h2 className='text-center mb-4'>Create an Account to use iNotebook</h2> 
+      <div className='row justify-content-center'>
+        <div className='col-lg-4 col-md-6 col-10'>
+          <form onSubmit={handleSubmit}>
+            <div className='mb-3'>
+              <label htmlFor='name' className='form-label'>
+                Name
+              </label>
+
+              <input
+                type='text'
+                className='form-control'
+                id='name'
+                name='name'
+                onChange={onChange}
+                required
+                value={credentials.name}
+                minLength={3}
+              />
+            </div>
+
+            <div className='mb-3'>
+              <label htmlFor='email' className='form-label'>
+                Email
+              </label>
+
+              <input
+                type='email'
+                className='form-control'
+                id='email'
+                name='email'
+                onChange={onChange}
+                required
+                value={credentials.email}
+              />
+            </div>
+
+            <div className='mb-3'>
+              <label htmlFor='password' className='form-label'>
+                Password (Min 5 chars)
+              </label>
+
+              <input
+                type='password'
+                className='form-control'
+                id='password'
+                name='password'
+                onChange={onChange}
+                required
+                value={credentials.password}
+                minLength={5}
+              />
+            </div>
+
+            <div className='mb-3'>
+              <label htmlFor='confirmpassword' className='form-label'>
+                Confirm Password
+              </label>
+
+              <input
+                type='password'
+                className='form-control'
+                id='confirmpassword'
+                name='confirmpassword'
+                onChange={onChange}
+                required
+                value={credentials.confirmpassword}
+                minLength={5}
+              />
+            </div>
+
+            <button
+              type='submit'
+              className='btn btn-primary rounded-pill w-100 mt-2'
+              disabled={
+                credentials.password.length < 5 ||
+                credentials.password !== credentials.confirmpassword
+              }
+            >
+              Create Account
+            </button>
+          </form>
         </div>
-        <div className='mb-3'>
-          <label htmlFor='email' className='form-label'>
-            Email address
-          </label>
-          <input
-            type='email'
-            className='form-control'
-            id='email'
-            name='email'
-            onChange={onChange}
-            required
-            value={credentials.email}
-          />
-          <div id='emailHelp' className='form-text'>
-            We'll never share your email with anyone else.
-          </div>
-        </div>
-        <div className='mb-3'>
-          <label htmlFor='password' className='form-label'>
-            Password (Min 5 chars)
-          </label>
-          <input
-            type='password'
-            className='form-control'
-            id='password'
-            name='password'
-            onChange={onChange}
-            required
-            value={credentials.password}
-            minLength={5}
-          />
-        </div>
-        <div className='mb-3'>
-          <label htmlFor='confirmpassword' className='form-label'>
-            Confirm Password
-          </label>
-          <input
-            type='password'
-            className='form-control'
-            id='confirmpassword'
-            name='confirmpassword'
-            onChange={onChange}
-            required
-            value={credentials.confirmpassword}
-            minLength={5}
-          />
-        </div>
-        <button type='submit' className='btn btn-primary'>
-          Create Account
-        </button>
-      </form>
+      </div>
     </div>
   );
 };
