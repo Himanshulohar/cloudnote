@@ -47,7 +47,7 @@ const Notes = props => {
   };
 
   return (
-    <>
+    <div className='p-3 bg-light rounded-4'>
       <AddNote showAlert={props.showAlert} />
 
       <button
@@ -172,7 +172,7 @@ const Notes = props => {
           );
         })}
       </div>
-    </>
+    </div>
   );
 };
 
