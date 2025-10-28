@@ -6,7 +6,7 @@ const Navbar = props => {
   // Corrected the hook variable name to lowercase 'navigate'
   const navigate = useNavigate(); // State to store the fetched user name
   const [userName, setUserName] = useState('');
-
+  const host = import.meta.env.VITE_BACKEND_URL;
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/login'); // Check if showAlert is available before calling it
@@ -17,7 +17,7 @@ const Navbar = props => {
 
   const getUserName = async () => {
     // IMPORTANT: Replace with your actual host and user detail endpoint (e.g., /api/auth/getuser)
-    const response = await fetch('http://localhost:5000/api/auth/getuser', {
+    const response = await fetch(`${host}/api/auth/getuser`, {
       method: 'POST', // Adjust method if necessary
       headers: {
         'Content-Type': 'application/json',

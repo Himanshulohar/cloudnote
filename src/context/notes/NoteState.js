@@ -3,7 +3,7 @@ import noteContext from './NoteContext';
 
 const NoteState = props => {
   const notesInitial = [];
-  const host = 'http://localhost:5000';
+  const host = import.meta.env.VITE_BACKEND_URL;
 
   // 1. Rename 'notes' state to 'rawNotes' to hold all notes fetched from the API
   const [rawNotes, setRawNotes] = useState(notesInitial);

@@ -9,7 +9,7 @@ const Login = props => {
   const Navigate = useNavigate();
 
   // Backend host URL (assuming it's passed or defined here)
-  const host = 'http://localhost:5000';
+  const host = import.meta.env.VITE_BACKEND_URL;
 
   // Handler for form submission
   const handleSubmit = async e => {
@@ -52,7 +52,7 @@ const Login = props => {
   return (
     // Outer container with top margin
     <div className=' bg-light py-5 container mt-5 rounded-4'>
-      <h2 className='text-center mb-4'>Log In to iNotebook</h2>
+      <h2 className='text-center mb-4'>Log In to CloudNote</h2>
 
       {/* Bootstrap Row to center the content horizontally */}
       <div className='row justify-content-center'>
