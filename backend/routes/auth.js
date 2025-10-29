@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 var fetchuser = require('../middleware/fetchuser');
 
-const JWT_SECRET = 'HimanshuSoftwareDeveloper';
+const JWT_SECRET = process.env.JWT_SECRET; 
 
 // Route 1: Create User using POST "/api/auth/createuser"
 router.post(

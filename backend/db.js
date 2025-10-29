@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const mongoURI = 'mongodb://localhost:27017/cloudnote';
+const mongoURI = process.env.MONGO_URI;
 
 const connectToMongo = async () => {
   try {
