@@ -41,7 +41,7 @@ const TagStack = () => {
     // 1. Added 'd-flex' and 'justify-content-center' to the main wrapper.
     // 2. Fixed the typo 'justify content-center' to 'justify-content-center'.
     // 3. The card inside uses 'maxWidth: 50%' so centering works well.
-    <div className='d-none d-lg-flex sticky-top m-5 justify-content-center'>
+    <div className='d-flex d-lg-flex sticky-top m-5 justify-content-center'>
       <div
         className='card rounded-4 shadow-sm '
         style={{ maxWidth: '50%', minWidth: '30%' }}
