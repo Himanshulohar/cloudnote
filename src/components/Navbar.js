@@ -6,7 +6,7 @@ const Navbar = props => {
   // Corrected the hook variable name to lowercase 'navigate'
   const navigate = useNavigate(); // State to store the fetched user name
   const [userName, setUserName] = useState('');
-  const host = import.meta.env.REACT_APP_BACKEND_URL;
+  const host = process.env.REACT_APP_BACKEND_URL;
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/login'); // Check if showAlert is available before calling it

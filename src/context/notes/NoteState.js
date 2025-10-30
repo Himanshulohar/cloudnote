@@ -3,7 +3,7 @@ import noteContext from './NoteContext';
 
 const NoteState = props => {
   const notesInitial = [];
-  const host = import.meta.env.REACT_APP_BACKEND_URL;
+  const host = process.env.REACT_APP_BACKEND_URL;
 
   // 1. Rename 'notes' state to 'rawNotes' to hold all notes fetched from the API
   const [rawNotes, setRawNotes] = useState(notesInitial);
