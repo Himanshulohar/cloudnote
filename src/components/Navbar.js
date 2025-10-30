@@ -3,21 +3,22 @@ import React, { useState, useEffect } from 'react';
 
 // Assuming showAlert is passed down as a prop from App.js for the Logout alert
 const Navbar = props => {
-  const navigate = useNavigate();
+  // Corrected the hook variable name to lowercase 'navigate'
+  const navigate = useNavigate(); // State to store the fetched user name
   const [userName, setUserName] = useState('');
   const host = process.env.REACT_APP_BACKEND_URL;
-
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/login');
+    navigate('/login'); // Check if showAlert is available before calling it
     if (props.showAlert) {
       props.showAlert('Logged out successfully', 'success');
     }
-  };
+  }; // Function to fetch user details (name/email)
 
   const getUserName = async () => {
+    // IMPORTANT: Replace with your actual host and user detail endpoint (e.g., /api/auth/getuser)
     const response = await fetch(`${host}/api/auth/getuser`, {
-      method: 'POST',
+      method: 'POST', // Adjust method if necessary
       headers: {
         'Content-Type': 'application/json',
         'auth-token': localStorage.getItem('token'),
@@ -25,17 +26,20 @@ const Navbar = props => {
     });
 
     if (!response.ok) {
+      // Handle error if token is invalid or request fails
       console.error('Failed to fetch user data');
-      setUserName('User');
+      setUserName('User'); // Default fallback
       return;
     }
 
-    const json = await response.json();
+    const json = await response.json(); // Assuming the API returns the user object with a 'name' field
     if (json.name) {
       setUserName(json.name);
     } else if (json.user && json.user.name) {
+      // Fallback for nested user object structure
       setUserName(json.user.name);
     } else if (json.email) {
+      // Fallback to email username if name is missing
       setUserName(json.email.split('@')[0]);
     } else {
       setUserName('User');
@@ -46,10 +50,9 @@ const Navbar = props => {
     if (localStorage.getItem('token')) {
       getUserName();
     } else {
-      setUserName('');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localStorage.getItem('token')]);
+      setUserName(''); // Clear username if logged out
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localStorage.getItem('token')]); // Re-run when token changes
 
   let location = useLocation();
 
@@ -59,21 +62,7 @@ const Navbar = props => {
       style={{ maxWidth: '75%', margin: '0 auto' }}
     >
       <div className='container-fluid'>
-        {/* Toggler visible on small screens */}
-        <button
-          className='navbar-toggler'
-          type='button'
-          data-bs-toggle='collapse'
-          data-bs-target='#navbarSupportedContent'
-          aria-controls='navbarSupportedContent'
-          aria-expanded='false'
-          aria-label='Toggle navigation'
-        >
-          <span className='navbar-toggler-icon'></span>
-        </button>
-
-        {/* Brand: centered on small screens, hidden on lg */}
-        <Link className='navbar-brand mx-auto d-lg-none text-center' to='/'>
+        <Link className='navbar-brand' to='/'>
           <i className='fa-solid fa-book me-2'></i>CloudNote
         </Link>
 
@@ -103,80 +92,60 @@ const Navbar = props => {
             </li>
           </ul>
 
-          {/* Mobile collapsed area: show profile/logout inside collapse */}
           {localStorage.getItem('token') ? (
-            <div className='d-lg-none w-100 mt-2 border-top pt-2'>
-              <div className='d-flex justify-content-between align-items-center'>
-                <div className='d-flex align-items-center'>
-                  <i className='fa-regular fa-user me-2'></i>
-                  <strong>{userName || 'User'}</strong>
-                </div>
-                <button
-                  className='btn btn-sm btn-outline-secondary'
-                  onClick={handleLogout}
+            // TRUE (Logged In): Show Dropdown Menu for User and Logout
+            <div className='d-flex align-items-center'>
+              <div className='dropdown'>
+                <a
+                  className='nav-link dropdown-toggle d-flex align-items-center'
+                  href='#'
+                  role='button'
+                  id='userDropdown'
+                  data-bs-toggle='dropdown'
+                  aria-expanded='false'
                 >
-                  <i className='fas fa-sign-out-alt me-1'></i> Logout
-                </button>
+                  {/* User Icon */}
+                  <i className='fa-regular fa-user me-2'></i>
+                  {/* Display the fetched username */}
+                  <span className='badge text-bg-secondary'>
+                    {userName || 'Loading...'}
+                  </span>
+                </a>
+                {/* Dropdown Menu */}
+                <ul
+                  className='dropdown-menu dropdown-menu-end'
+                  aria-labelledby='userDropdown'
+                >
+                  <li>
+                    <button className='dropdown-item' onClick={handleLogout}>
+                      <i className='fas fa-sign-out-alt me-2'></i> Logout
+                    </button>
+                  </li>
+                </ul>
               </div>
             </div>
           ) : (
-            <div className='d-lg-none w-100 mt-2'>
-              <div className='d-flex justify-content-center gap-2'>
-                <Link to='/login' className='btn btn-outline-secondary btn-sm'>
-                  Login
-                </Link>
-                <Link to='/signup' className='btn btn-outline-secondary btn-sm'>
-                  Signup
-                </Link>
-              </div>
-            </div>
+            // FALSE (Logged Out): Show Login/Signup Links
+            // Using a Fragment (<>...</>) to wrap the two adjacent <Link> elements
+            <>
+              <Link
+                to='/login'
+                role='button'
+                className='btn btn-outline-secondary mx-2'
+              >
+                Login
+              </Link>
+
+              <Link
+                to='/signup'
+                role='button'
+                className='btn btn-outline-secondary mx-2'
+              >
+                Signup
+              </Link>
+            </>
           )}
         </div>
-
-        {/* Brand for large screens (left) */}
-        <Link className='navbar-brand d-none d-lg-block' to='/'>
-          <i className='fa-solid fa-book me-2'></i>CloudNote
-        </Link>
-
-        {/* Large screens: show user dropdown to the right */}
-        {localStorage.getItem('token') ? (
-          <div className='d-none d-lg-flex align-items-center ms-3'>
-            <div className='dropdown'>
-              <a
-                className='nav-link dropdown-toggle d-flex align-items-center'
-                href='#'
-                role='button'
-                id='userDropdown'
-                data-bs-toggle='dropdown'
-                aria-expanded='false'
-              >
-                <i className='fa-regular fa-user me-2'></i>
-                <span className='badge text-bg-secondary'>
-                  {userName || 'Loading...'}
-                </span>
-              </a>
-              <ul
-                className='dropdown-menu dropdown-menu-end'
-                aria-labelledby='userDropdown'
-              >
-                <li>
-                  <button className='dropdown-item' onClick={handleLogout}>
-                    <i className='fas fa-sign-out-alt me-2'></i> Logout
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </div>
-        ) : (
-          <div className='d-none d-lg-flex ms-3'>
-            <Link to='/login' className='btn btn-outline-secondary mx-2'>
-              Login
-            </Link>
-            <Link to='/signup' className='btn btn-outline-secondary mx-2'>
-              Signup
-            </Link>
-          </div>
-        )}
       </div>
     </nav>
   );
