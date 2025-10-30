@@ -9,7 +9,7 @@ const Login = props => {
   const Navigate = useNavigate();
 
   // Backend host URL (assuming it's passed or defined here)
-  const host = import.meta.env.BACKEND_URL;
+  const host = import.meta.env.REACT_APP_BACKEND_URL;
 
   // Handler for form submission
   const handleSubmit = async e => {

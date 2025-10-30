@@ -10,7 +10,7 @@ const Signup = props => {
     confirmpassword: '',
   });
 
-    const host = import.meta.env.BACKEND_URL; // 2. useNavigate hook initialized correctly
+  const host = import.meta.env.REACT_APP_BACKEND_URL; // 2. useNavigate hook initialized correctly
   const navigate = useNavigate(); // Optional: Redirects if the user is already logged in
 
   useEffect(() => {
